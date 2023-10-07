@@ -17,7 +17,7 @@ int _printf(char *format, ...)
         int capitalHexNum[64];
         char buffer[BUFFER_SIZE];
         int buff_ind = 0;
-        int divisor, k, octalArrayInit, hexArrayInit, capsHexArrayInit;
+        int divisor, k, octalArrayInit, hexArrayInit, capsHexArrayInit, bufferInit;
         va_list args;
 
         va_start(args, format);
@@ -31,9 +31,12 @@ int _printf(char *format, ...)
                         if (format[i] == 'c')
                         {
                                 char letter = va_arg(args, int);
-
-                                _putchar(letter);
-                                num += 1;
+                                buffer[buff_ind] = letter;
+                                if (buff_ind == BUFFER_SIZE)
+                                {
+                                    write_buffer(buffer, &buff_ind);
+                                    num += buff_ind;
+                                }
                         }
                         else if (format[i] == 's')
                         {
@@ -41,9 +44,13 @@ int _printf(char *format, ...)
 
                                 while (*str)
                                 {
-                                        _putchar(*str);
+                                        buffer[buff_ind++] = *str;
                                         str++;
-                                        num += 1;
+                                        if (buff_ind == BUFFER_SIZE)
+                                        {
+                                            write_buffer(buffer, &buff_ind);
+                                            num += buff_ind;
+                                        }
                                 }
                         }
                         else if (format[i] == 'd' || format[i] == 'i')
@@ -91,8 +98,12 @@ int _printf(char *format, ...)
                         else if (format[i] == 'u')
                         {
                             unsigned int unsignedDecimal = va_arg(args, unsigned int);
-                            _putchar(unsignedDecimal);
-                            num += 1;
+                            buffer[buff_ind] = unsignedDecimal;
+                            if (buff_ind == BUFFER_SIZE)
+                            {
+                                write_buffer(buffer, &buff_ind);
+                                num += buff_ind;
+                            }
                         }
                         else if (format[i] == 'o')
                         {
@@ -171,13 +182,16 @@ int _printf(char *format, ...)
         return (num);
 }
 
+
+// print the contents in the buffer
 void write_buffer(char buffer[], int *buff_ind)
 {
     if (*buff_ind > 0)
     {
-        for (int i = 0; i < *buff_ind; i++)
+        for (bufferInit = 0; bufferInit < *buff_ind; bufferInit++)
         {
-            _putchar(buffer[i]);
+            _putchar(buffer[bufferInit]);
         }
     }
+    *buff_ind = 0;
 }
