@@ -1,8 +1,7 @@
-#include "shell.h"
-char *split_string(char *input);
+
 int main (int argc, char*argv[])
 {
-    char *buffer = NULL, *prompt = "$ ", *tokenize;
+    char *buffer = NULL, *prompt = "$ ";
     int status;
     size_t n;
     ssize_t read;
@@ -28,14 +27,12 @@ while (1 && !frm_pipe)
     if (buffer[read - 1] == '\n')
         buffer[read - 1] = '\0';
 
-    /**Tokenize the inputs*/
-    tokenize = split_string(buffer)
     /**Create a fork */
 
     newProcess = fork();
     if (newProcess == 0)
     {
-        if (execve(buffer, tokenize, NULL) == -1)
+        if (execve(buffer, argv, NULL) == -1)
         {
             write(STDOUT_FILENO, "Error (execve)", 14);
             exit(EXIT_FAILURE);
@@ -54,22 +51,4 @@ while (1 && !frm_pipe)
 }
 free(buffer);
 return (0);
-}
-
-
-char *split_string(char *input)
-{
-    int i = 1;
-    char **token;
-
-    for (i = 1; input[i] != NULL; i++)
-    {
-        token = strtok(argv[i], " ");
-        while (token != NULL)
-        {
-            printf("Token: %s\n", token);
-            token = strtok(NULL, " ");
-        }
-    }
-    return (token);
 }
