@@ -1,14 +1,17 @@
-
+#include "shell.h"
 int main (int argc, char*argv[])
 {
     char *buffer = NULL, *prompt = "$ ";
-    int status;
-    size_t n;
+    char *token, *command;
+    char *arguements[1024];
+    int status, argCount = 0;
+    size_t n = 0;
     ssize_t read;
     bool frm_pipe = false;
     pid_t newProcess;
 while (1 && !frm_pipe)
 {   
+    int argCount = 0;
   /**
     * Print a prompt and getline inputs
     */
@@ -23,18 +26,31 @@ while (1 && !frm_pipe)
         write(STDOUT_FILENO, "Error getline", 13);
         free(buffer);
     }
+
     /*replace the new line with null terminator*/
     if (buffer[read - 1] == '\n')
         buffer[read - 1] = '\0';
 
-    /**Create a fork */
+    /**Tokenize*/
+    token = strtok(buffer, " ");
 
+    /**Save commands to an array*/
+
+    while (token != NULL)
+    {
+        arguements[argCount] = token;
+        argCount++;
+        token = strtok(NULL, " ");
+    }
+
+    arguements[argCount] = NULL;
+    /**Create a fork */
     newProcess = fork();
     if (newProcess == 0)
     {
-        if (execve(buffer, argv, NULL) == -1)
+        if (execve(arguements[0], arguements, NULL) == -1)
         {
-            write(STDOUT_FILENO, "Error (execve)", 14);
+            perror("error");
             exit(EXIT_FAILURE);
         }
     }
@@ -47,7 +63,7 @@ while (1 && !frm_pipe)
     {
         wait(&status);
     }
-    
+    argCount = 0;
 }
 free(buffer);
 return (0);
