@@ -1,11 +1,12 @@
 #include "shell.h"
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char **env_command)
 {
     char *buffer = NULL, *prompt = "$ ";
     char *token, *command, *full_path, *exit_token;
     char *arguements[1024];
     int status, argCount = 0;
     size_t n = 0;
+    unsigned int i = 0;
     ssize_t read;
     bool frm_pipe = false;
     pid_t newProcess;
@@ -51,6 +52,16 @@ int main(int argc, char *argv[])
         {
             free(buffer);
             exit(0);
+        }
+        /**Prints current environment - builtin env*/
+        if (strcmp(arguements[0], "env") == 0)
+        {
+            while (env_command[i] != NULL)
+            {
+                write(STDOUT_FILENO, env_command[i], strlen(env_command[i]));
+                write(STDOUT_FILENO, "\n", 2);
+                i++;
+            }
         }
         /**Create a fork */
         newProcess = fork();
