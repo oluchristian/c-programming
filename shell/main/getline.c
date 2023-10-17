@@ -48,13 +48,13 @@ int main(int argc, char *argv[], char **env_command)
         arguements[argCount] = NULL;
 
         /**Exit the shell if user enters the exit command*/
-        if (strcmp(arguements[0], "exit") == 0)
+        if (s_strcmp(arguements[0], "exit") == 0)
         {
             free(buffer);
             exit(0);
         }
         /**Prints current environment - builtin env*/
-        if (strcmp(arguements[0], "env") == 0)
+        if (s_strcmp(arguements[0], "env") == 0)
         {
             while (env_command[i] != NULL)
             {

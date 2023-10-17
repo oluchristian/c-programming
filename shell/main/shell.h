@@ -8,4 +8,5 @@
 #include <stdbool.h>
 #include <sys/stat.h>
 char *get_path(char *command);
+int s_strcmp(const char *s1, const char *s2);
 #endif
