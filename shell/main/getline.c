@@ -2,7 +2,7 @@
 int main (int argc, char*argv[])
 {
     char *buffer = NULL, *prompt = "$ ";
-    char *token, *command;
+    char *token, *command, *full_path, *exit_token;
     char *arguements[1024];
     int status, argCount = 0;
     size_t n = 0;
@@ -24,7 +24,8 @@ while (1 && !frm_pipe)
     if (read == -1)
     {
         write(STDOUT_FILENO, "Error getline", 13);
-        free(buffer);
+        write(STDOUT_FILENO, "\n", 2);
+        exit(EXIT_FAILURE);
     }
 
     /*replace the new line with null terminator*/
@@ -48,7 +49,9 @@ while (1 && !frm_pipe)
     newProcess = fork();
     if (newProcess == 0)
     {
-        if (execve(arguements[0], arguements, NULL) == -1)
+        /*Full path of the command*/
+        full_path = get_path(arguements[0]);
+        if (execve(full_path, arguements, NULL) == -1)
         {
             perror("error");
             exit(EXIT_FAILURE);

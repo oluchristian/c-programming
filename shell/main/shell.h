@@ -6,4 +6,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
+#include <sys/stat.h>
+char *get_path(char *command);
 #endif
